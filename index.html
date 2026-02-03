@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Melissa ❤️</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(180deg, #ff4d6d, #ff99c8);
+  overflow: hidden;
+  color: white;
+  text-align: center;
+}
+
+.screen {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden { display: none; }
+
+h1 {
+  font-size: 2.6rem;
+  padding: 0 10px;
+}
+
+h2 {
+  font-size: 1.3rem;
+  max-width: 90%;
+}
+
+button {
+  font-size: 1.2rem;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 40px;
+  cursor: pointer;
+  margin: 10px;
+}
+
+#yesBtn { background: #ff1e56; color: white; }
+#noBtn { position: absolute; background: white; color: #ff1e56; }
+
+.heart, .petal {
+  position: fixed;
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.firework {
+  position: fixed;
+  font-size: 30px;
+  animation: boom 1s ease-out forwards;
+}
+
+@keyframes boom {
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(3); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<audio id="music" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5e3c7d8b4d.mp3?filename=romantic-background-112191.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Countdown -->
+<div class="screen" id="countdown">
+  <h1 id="countText">3</h1>
+</div>
+
+<!-- Main -->
+<div class="screen hidden" id="main">
+  <h1>Melissa 💖</h1>
+  <h2 id="typing"></h2>
+
+  <div>
+    <button id="yesBtn">Yes ❤️</button>
+    <button id="noBtn">No 😈</button>
+  </div>
+</div>
+
+<!-- Final -->
+<div class="screen hidden" id="final">
+  <h1>I love you too cinnabums 💕</h1>
+</div>
+
+<script>
+const countdown = document.getElementById("countdown");
+const main = document.getElementById("main");
+const final = document.getElementById("final");
+const countText = document.getElementById("countText");
+const typing = document.getElementById("typing");
+const music = document.getElementById("music");
+
+let count = 3;
+
+const countdownTimer = setInterval(() => {
+  count--;
+  countText.innerText = count;
+  if (count === 0) {
+    clearInterval(countdownTimer);
+    countdown.classList.add("hidden");
+    main.classList.remove("hidden");
+    typeText();
+    music.play().catch(()=>{});
+  }
+}, 1000);
+
+// typing
+const message = "Will you be my Valentine?";
+let i = 0;
+function typeText() {
+  if (i < message.length) {
+    typing.innerHTML += message.charAt(i);
+    i++;
+    setTimeout(typeText, 60);
+  }
+}
+
+// moving NO button
+const noBtn = document.getElementById("noBtn");
+function moveButton() {
+  const x = Math.random() * (window.innerWidth - 100);
+  const y = Math.random() * (window.innerHeight - 100);
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+}
+noBtn.addEventListener("mouseover", moveButton);
+noBtn.addEventListener("touchstart", moveButton);
+
+// YES click
+document.getElementById("yesBtn").addEventListener("click", () => {
+  main.classList.add("hidden");
+  final.classList.remove("hidden");
+
+  if (navigator.vibrate) navigator.vibrate([200,100,200]);
+
+  startHearts();
+  startPetals();
+  fireworks();
+});
+
+// hearts
+function startHearts() {
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "💖";
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.top = "-20px";
+    heart.style.fontSize = (Math.random()*20+15)+"px";
+    heart.style.animationDuration = (Math.random()*2+2)+"s";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),4000);
+  }, 120);
+}
+
+// rose petals 🌹
+function startPetals() {
+  setInterval(() => {
+    const petal = document.createElement("div");
+    petal.className = "petal";
+    petal.innerHTML = "🌹";
+    petal.style.left = Math.random() * window.innerWidth + "px";
+    petal.style.top = "-20px";
+    petal.style.fontSize = (Math.random()*25+15)+"px";
+    petal.style.animationDuration = (Math.random()*3+3)+"s";
+    document.body.appendChild(petal);
+    setTimeout(()=>petal.remove(),6000);
+  }, 180);
+}
+
+// fireworks
+function fireworks() {
+  setInterval(() => {
+    const fw = document.createElement("div");
+    fw.className = "firework";
+    fw.innerHTML = "✨💗✨";
+    fw.style.left = Math.random()*window.innerWidth+"px";
+    fw.style.top = Math.random()*window.innerHeight+"px";
+    document.body.appendChild(fw);
+    setTimeout(()=>fw.remove(),1000);
+  }, 500);
+}
+</script>
+
+</body>
+</html>
