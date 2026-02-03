@@ -16,7 +16,9 @@ html, body {
   overflow: hidden;
 }
 
-/* floating outline hearts */
+.hidden { display: none; }
+
+/* floating hearts background */
 .bg-heart {
   position: fixed;
   font-size: 20px;
@@ -38,7 +40,7 @@ html, body {
   justify-content: center;
 }
 
-/* soft blur glass card */
+/* glass card */
 .glass {
   backdrop-filter: blur(20px);
   background: rgba(255,255,255,0.18);
@@ -53,23 +55,30 @@ html, body {
 }
 
 /* text */
-h1 {
-  font-size: 2.3rem;
-  margin-bottom: 10px;
-}
-
+h1 { font-size: 2rem; margin-bottom: 10px; }
 .highlight { color: #ff0077; }
-
-h2 {
-  font-weight: 300;
-  font-size: 1rem;
-  opacity: 0.8;
-}
 
 .small {
   font-size: 0.85rem;
   opacity: 0.7;
   margin-top: 8px;
+}
+
+.error {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 8px;
+}
+
+/* input */
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  margin-top: 10px;
+  font-size: 1rem;
+  text-align: center;
 }
 
 /* buttons */
@@ -80,7 +89,6 @@ button {
   border: none;
   cursor: pointer;
   margin: 10px;
-  transition: 0.2s;
 }
 
 #yesBtn {
@@ -89,16 +97,26 @@ button {
   box-shadow: 0 6px 18px rgba(255,0,119,0.4);
 }
 
-#yesBtn:hover { transform: scale(1.05); }
-
 #noBtn {
   position: absolute;
   background: white;
   color: #ff0077;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-/* effects */
+/* shake animation */
+.shake {
+  animation: shake 0.3s;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-6px); }
+  100% { transform: translateX(0); }
+}
+
+/* falling effects */
 .heart, .petal {
   position: fixed;
   animation: fall linear forwards;
@@ -131,6 +149,7 @@ button {
 </audio>
 
 <script>
+/* background hearts */
 for (let i=0;i<15;i++){
   const h=document.createElement("div");
   h.className="bg-heart";
@@ -142,20 +161,31 @@ for (let i=0;i<15;i++){
 }
 </script>
 
-<div class="screen" id="main">
-  <div class="glass">
-    <h1>Will you be my <span class="highlight">Valentine?</span></h1>
-    <h2>Choose wisely… 💕</h2>
-
-    <div>
-      <button id="yesBtn">Yes! ✨</button>
-      <button id="noBtn">No 😈</button>
-    </div>
-
-    <div class="small">Hint: The “No” button is shy… 😉</div>
+<!-- PASSWORD SCREEN -->
+<div class="screen" id="lock">
+  <div class="glass" id="lockBox">
+    <h1>what's my fav nickname for you? 💕</h1>
+    <input id="passInput" placeholder="type answer..." />
+    <button onclick="checkPass()">Unlock ✨</button>
+    <div class="error" id="error"></div>
   </div>
 </div>
 
+<!-- MAIN -->
+<div class="screen hidden" id="main">
+  <div class="glass">
+    <h1>Will you be my <span class="highlight">Valentine?</span></h1>
+
+    <div>
+      <button id="yesBtn">Yes! 💖</button>
+      <button id="noBtn">No 😈</button>
+    </div>
+
+    <div class="small">Hint: The “No” button is shy 😉</div>
+  </div>
+</div>
+
+<!-- FINAL -->
 <div class="screen hidden" id="final">
   <div class="glass">
     <h1>I love you too cinnabums 💖</h1>
@@ -166,6 +196,22 @@ for (let i=0;i<15;i++){
 const music=document.getElementById("music");
 document.body.addEventListener("click",()=>music.play().catch(()=>{}),{once:true});
 
+/* password check */
+function checkPass(){
+  const input=document.getElementById("passInput");
+  const value=input.value.trim().toLowerCase();
+
+  if(value==="cinnabums" || value==="bubu"){
+    document.getElementById("lock").classList.add("hidden");
+    document.getElementById("main").classList.remove("hidden");
+  } else {
+    document.getElementById("error").innerText="wrong answer 😝";
+    document.getElementById("lockBox").classList.add("shake");
+    setTimeout(()=>lockBox.classList.remove("shake"),300);
+  }
+}
+
+/* moving NO */
 const noBtn=document.getElementById("noBtn");
 function moveButton(){
   noBtn.style.left=Math.random()*(window.innerWidth-100)+"px";
@@ -174,10 +220,10 @@ function moveButton(){
 noBtn.addEventListener("mouseover",moveButton);
 noBtn.addEventListener("touchstart",moveButton);
 
+/* YES */
 document.getElementById("yesBtn").onclick=()=>{
   document.getElementById("main").classList.add("hidden");
   document.getElementById("final").classList.remove("hidden");
-  if(navigator.vibrate) navigator.vibrate([200,100,200]);
   hearts(); petals(); fireworks();
 };
 
