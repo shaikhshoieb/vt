@@ -16,7 +16,7 @@ html, body {
   overflow: hidden;
 }
 
-.hidden { display: none; }
+.hidden { display: none !important; }
 
 /* floating hearts background */
 .bg-heart {
@@ -40,6 +40,10 @@ html, body {
   justify-content: center;
   z-index: 10;
 }
+
+#lock { z-index: 100; }
+#main { z-index: 50; }
+#final { z-index: 25; }
 
 /* glass card */
 .glass {
@@ -85,12 +89,13 @@ input {
 
 /* buttons */
 button {
-  font-size: 1.1rem;
-  padding: 12px 26px;
-  border-radius: 30px;
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  border-radius: 20px;
   border: none;
   cursor: pointer;
-  margin: 10px;
+  margin: 8px;
+  white-space: nowrap;
 }
 
 #yesBtn {
@@ -100,7 +105,6 @@ button {
 }
 
 #noBtn {
-  position: absolute;
   background: white;
   color: #ff0077;
 }
@@ -183,7 +187,7 @@ for (let i=0;i<15;i++){
       <button id="noBtn">No 😈</button>
     </div>
 
-    <div class="small">Hint: The “No” button is shy 😉</div>
+    <div class="small" id="hint">Hint: Try clicking the "No" button 😉</div>
   </div>
 </div>
 
@@ -191,6 +195,7 @@ for (let i=0;i<15;i++){
 <div class="screen hidden" id="final">
   <div class="glass">
     <h1>I love you too cinnabums 💖</h1>
+    <p style="margin-top: 20px; font-size: 1rem; line-height: 1.5;">Heheheheh, You are stuck with me now.😘💋😚</p>
   </div>
 </div>
 
@@ -215,21 +220,58 @@ function checkPass(){
 }
 
 /* moving NO */
-function moveButton(){
+const noMessages = [
+  "No? Really? 😢",
+  "Come ooooon 🥺",
+  "Pretty please? 💕",
+  "I'll be lonely without you 😭",
+  "You're breaking my heart 💔",
+  "Last chance to say yes! 🙏",
+  "Be nice to me 🥰",
+  "Pleeeease? 🎀",
+  "Don't leave me hanging 😩",
+  "I promise to love you forever 💞",
+  "You're my forever 😘",
+  "Say yes already! 😄",
+  "I'm on my knees here 🥺",
+  "Don't break my heart 💔",
+  "You know you want to 😉",
+  "C'mon, give me a chance 🙏",
+  "I'll treat you right 💕",
+  "Forever and always 💑",
+  "You complete me 💕",
+  "Let's do this together 🤝",
+  "Say yes! 🎉",
+  "I'm lost without you 😢",
+  "Please... I'm begging 🥺",
+  "You're my everything 💖",
+  "Let's make it official 💍",
+  "Be my Valentine! 💕",
+  "I need you 😭",
+  "Together forever? 🥰",
+  "Just say yes! 🙏",
+  "I love you too much to say no 💕"
+];
+
+let noClickCount = 0;
+
+function handleNoClick(){
   const btn=document.getElementById("noBtn");
   if(!btn) return;
-  const randomX=Math.random()*(window.innerWidth-120);
-  const randomY=Math.random()*(window.innerHeight-60);
-  btn.style.position="fixed";
-  btn.style.left=randomX+"px";
-  btn.style.top=randomY+"px";
+  
+  // Loop through messages
+  const messageIndex = noClickCount % noMessages.length;
+  btn.innerText = noMessages[messageIndex];
+  noClickCount++;
 }
 
 document.addEventListener("DOMContentLoaded",()=>{
   const noBtn=document.getElementById("noBtn");
   if(noBtn){
-    noBtn.addEventListener("mouseover",moveButton);
-    noBtn.addEventListener("touchstart",moveButton);
+    noBtn.addEventListener("click", (e)=>{
+      e.preventDefault();
+      handleNoClick();
+    });
   }
   
   const yesBtn=document.getElementById("yesBtn");
