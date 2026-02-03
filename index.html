@@ -38,10 +38,12 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
 }
 
 /* glass card */
 .glass {
+  position: relative;
   backdrop-filter: blur(20px);
   background: rgba(255,255,255,0.18);
   border: 1px solid rgba(255,255,255,0.35);
@@ -204,28 +206,41 @@ function checkPass(){
   if(value==="cinnabums" || value==="bubu"){
     document.getElementById("lock").classList.add("hidden");
     document.getElementById("main").classList.remove("hidden");
+    setTimeout(()=>moveButton(),100);
   } else {
     document.getElementById("error").innerText="wrong answer 😝";
     document.getElementById("lockBox").classList.add("shake");
-    setTimeout(()=>lockBox.classList.remove("shake"),300);
+    setTimeout(()=>document.getElementById("lockBox").classList.remove("shake"),300);
   }
 }
 
 /* moving NO */
-const noBtn=document.getElementById("noBtn");
 function moveButton(){
-  noBtn.style.left=Math.random()*(window.innerWidth-100)+"px";
-  noBtn.style.top=Math.random()*(window.innerHeight-80)+"px";
+  const btn=document.getElementById("noBtn");
+  if(!btn) return;
+  const randomX=Math.random()*(window.innerWidth-120);
+  const randomY=Math.random()*(window.innerHeight-60);
+  btn.style.position="fixed";
+  btn.style.left=randomX+"px";
+  btn.style.top=randomY+"px";
 }
-noBtn.addEventListener("mouseover",moveButton);
-noBtn.addEventListener("touchstart",moveButton);
 
-/* YES */
-document.getElementById("yesBtn").onclick=()=>{
-  document.getElementById("main").classList.add("hidden");
-  document.getElementById("final").classList.remove("hidden");
-  hearts(); petals(); fireworks();
-};
+document.addEventListener("DOMContentLoaded",()=>{
+  const noBtn=document.getElementById("noBtn");
+  if(noBtn){
+    noBtn.addEventListener("mouseover",moveButton);
+    noBtn.addEventListener("touchstart",moveButton);
+  }
+  
+  const yesBtn=document.getElementById("yesBtn");
+  if(yesBtn){
+    yesBtn.onclick=()=>{
+      document.getElementById("main").classList.add("hidden");
+      document.getElementById("final").classList.remove("hidden");
+      hearts(); petals(); fireworks();
+    };
+  }
+});
 
 function hearts(){
   setInterval(()=>{
